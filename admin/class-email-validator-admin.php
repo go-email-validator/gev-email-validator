@@ -149,6 +149,14 @@ class Email_Validator_Admin {
 					$options[ GEV_Email_Validator_Options::SKIP_PAGES ]  = isset( $input[ GEV_Email_Validator_Options::SKIP_PAGES ] ) ? sanitize_textarea_field( $input[ GEV_Email_Validator_Options::SKIP_PAGES ] ) : '';
 					$options[ GEV_Email_Validator_Options::SKIP_EMAILS ] = isset( $input[ GEV_Email_Validator_Options::SKIP_EMAILS ] ) ? sanitize_textarea_field( $input[ GEV_Email_Validator_Options::SKIP_EMAILS ] ) : '';
 
+					$options[ GEV_Email_Validator_Options::INTEGRATION_WITH_PLUGINS ] = [];
+					if ( isset( $input[ GEV_Email_Validator_Options::INTEGRATION_WITH_PLUGINS ] ) ) {
+						$options[ GEV_Email_Validator_Options::INTEGRATION_WITH_PLUGINS ] = array_intersect(
+							$this->options->getListPlugins(),
+							$input[ GEV_Email_Validator_Options::INTEGRATION_WITH_PLUGINS ]
+						);
+					}
+
 					return $options;
 				},
 			]
@@ -243,7 +251,7 @@ class Email_Validator_Admin {
 			$sectionId,
 			[ 'label_for' => $this->options->id( GEV_Email_Validator_Options::SKIP_EMAILS ) ] );
 		add_settings_field( $this->options->id( GEV_Email_Validator_Options::INTEGRATION_WITH_PLUGINS ),
-			__( 'Plugins', $this->plugin_name ),
+			__( 'Integration with', $this->plugin_name ),
 			$this->generateSelect(
 				GEV_Email_Validator_Options::INTEGRATION_WITH_PLUGINS,
 				$this->options->getListPlugins(),
@@ -375,14 +383,14 @@ class Email_Validator_Admin {
 			$name     = $this->options->name( $nameOpt );
 			$valueSet = array_fill_keys( $this->options->as_array( $nameOpt ), null )
 			?>
-            <select name="<?= $name ?>" id="<?= $id ?>"
+            <select name="<?= $name ?>[]" id="<?= $id ?>"
 				<?php
 				foreach ( $htmlOptions as $attr_name => $attr_value ) {
 					echo $attr_name . '="' . esc_attr( $attr_value ) . '"';
 				} ?>>
 				<?php
 				foreach ( $options as $option ) { ?>
-                    <option value="<?= $option ?>>" <?= array_key_exists( $option, $valueSet ) ? 'selected' : '' ?>>
+                    <option value="<?= $option ?>" <?= array_key_exists( $option, $valueSet ) ? 'selected' : '' ?>>
 						<?= $option ?>
                     </option>
 					<?php
