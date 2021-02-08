@@ -1,0 +1,9 @@
+.idea
+
+node_modules
+
+.env
+
+# composer
+composer.lock
+php/vendor

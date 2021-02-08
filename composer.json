@@ -1,0 +1,15 @@
+{
+    "name": "go-email-validator/gev-email-validator",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "maranqz",
+            "email": "ilia.sergunin@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5",
+        "ext-json": "*",
+        "go-email-validator/sdk": "^1.0"
+    }
+}

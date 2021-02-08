@@ -1,0 +1,31 @@
+{
+  "name": "email_validator_sdk",
+  "version": "0.0.1",
+  "description": "SDK for Email Validator",
+  "license": "MIT",
+  "main": "javascript/src/index.js",
+  "browser": {
+    "fs": false
+  },
+  "dependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
+    "mailchecker": "^4.0.3",
+    "superagent": "3.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/go-email-validator/email-validator-sdk.git"
+  },
+  "keywords": [
+    "email",
+    "validator",
+    "validation",
+    "sdk"
+  ],
+  "author": "maranqz",
+  "bugs": {
+    "url": "https://github.com/go-email-validator/email-validator-sdk/issues"
+  },
+  "homepage": "https://github.com/go-email-validator/email-validator-sdk#readme"
+}
