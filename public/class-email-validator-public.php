@@ -116,6 +116,7 @@ class GEV_Email_Validator_Public {
 
 	/**
 	 * https://wordpress.org/plugins/contact-form-7/
+	 * {@see wpcf7_text_validation_filter}
 	 *
 	 * @param WPCF7_Validation $result
 	 * @param $tags
@@ -133,7 +134,7 @@ class GEV_Email_Validator_Public {
 		$errors = $this->validator->validate( sanitize_email( $_POST[ $tags->name ] ) );
 
 		if ( $errors->isEmpty() ) {
-			return true;
+			return $result;
 		}
 
 		$result->invalidate( $tags, $this->validator->messages_text( $errors ) );
@@ -143,21 +144,25 @@ class GEV_Email_Validator_Public {
 
 	/**
 	 * https://wordpress.org/plugins/formidable/
+	 * {@see FrmEntryValidate::validate}
 	 */
 	public function formidable_filter( $errors, $values ) {
 		foreach ( $values['item_meta'] as $key => $value ) {
+			$fieldName = 'field' . $key;
+
 			if ( ! preg_match( "/^\S+@\S+\.\S+$/", $value ) ||
-			     $this->is_admin( $value )
+			     $this->is_admin( $value ) ||
+			     isset( $errors[ $fieldName ] )
 			) {
 				continue;
 			}
 
-			$errors = $this->validator->validate( $value );
+			$validateErrors = $this->validator->validate( $value );
 
-			if ( $errors->isEmpty() ) {
+			if ( $validateErrors->isEmpty() ) {
 				continue;
 			}
-			$errors['ct_error'] = $this->validator->messages_text( $errors );
+			$errors[ $fieldName ] = $this->validator->messages_text( $validateErrors );
 			break;
 		}
 
@@ -168,9 +173,13 @@ class GEV_Email_Validator_Public {
 	 * https://github.com/CalderaWP/Caldera-Forms
 	 */
 	public function caldera_filter( $entry, $field, $form ) {
+		if ( is_wp_error( $entry ) ) {
+			return $entry;
+		}
+
 		$errors = $this->validator->validate( $entry );
 		if ( $errors->isEmpty() ) {
-			return null;
+			return $entry;
 		}
 
 		return new WP_Error( 400, $this->validator->messages_text( $errors ) );
@@ -178,15 +187,16 @@ class GEV_Email_Validator_Public {
 
 	/**
 	 * https://wordpress.org/plugins/profile-builder/
+	 * {@see wppb_toolbox_check_email_domain}
 	 */
-	public function profile_builder_filter( $entry, $field, $form ) {
-		$errors = $this->validator->validate( $entry );
+	public function profile_builder_filter( $message, $field, $request_data, $form_location ) {
+		$errors = $this->validator->validate( $request_data['email'] );
 
 		if ( $errors->isEmpty() ) {
 			return null;
 		}
 
-		return new WP_Error( 400, $this->validator->messages_text( $errors ) );
+		return $this->validator->messages_text( $errors );
 	}
 
 

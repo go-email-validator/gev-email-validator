@@ -42,15 +42,18 @@ class GEV_Email_Validator_Validator {
 	public function validate( $email ) {
 		$email = sanitize_email( $email );
 
-		if ( empty( $email ) ) {
-			return new Errors( [ ErrorEnum::ERROR_INVALID ] );
-		}
-
-		if ( $this->wp_validate( $email ) ) {
+		if ( empty( $email ) || $this->wp_validate( $email ) ) {
 			return new Errors();
 		}
 
-		return $this->getValidator()->validate( $email );
+		$errors = wp_cache_get( $email, $this->plugin_name );
+
+		if ( empty( $errors ) ) {
+			$errors = $this->getValidator()->validate( $email );
+			wp_cache_set( $email, $errors, $this->plugin_name );
+		}
+
+		return $errors;
 	}
 
 	protected function wp_validate( $email ) {
@@ -64,7 +67,7 @@ class GEV_Email_Validator_Validator {
 
 		$patterns = $this->options->string_as_array( GEV_Email_Validator_Options::SKIP_PAGES );
 		if ( ! empty( $patterns ) ) {
-			$pattern = '/(' . implode( ')|(', $patterns ) . ')/';
+			$pattern = '/(' . str_replace( '/', '\\', implode( ')|(', $patterns ) ) . ')/';
 			if ( preg_match( $pattern, $_SERVER['REQUEST_URI'] ) === 1 ) {
 				return true;
 			}

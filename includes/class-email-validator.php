@@ -275,6 +275,8 @@ class GEV_Email_Validator {
 
 	/**
 	 * @TODO add skip for from email checking in mail sending
+	 *
+	 * Each filter try to be integrated in plugin without changing them behaviors
 	 */
 	private function define_public_email_filters( GEV_Email_Validator_Public $plugin_public ) {
 		if ( ! $this->validator->is_on() ) {
@@ -298,27 +300,35 @@ class GEV_Email_Validator {
 	}
 
 	private function define_wpcf7_filters( GEV_Email_Validator_Public $plugin_public ) {
+		$this->preparer_is_email_filters( $plugin_public, 'wpcf7_validate_email' );
+		$this->preparer_is_email_filters( $plugin_public, 'wpcf7_validate_email*' );
+
 		$this->loader->add_filter( 'wpcf7_validate_email',
 			$plugin_public,
 			'wpcf7_filter',
-			5,
+			11,
 			2 );
 		$this->loader->add_filter( 'wpcf7_validate_email*',
 			$plugin_public,
 			'wpcf7_filter',
-			5,
+			11,
 			2 );
 	}
 
 	private function define_formidable_filters( GEV_Email_Validator_Public $plugin_public ) {
+		$this->preparer_is_email_filters( $plugin_public, 'frm_posted_field_ids', 0, false );
+		$this->preparer_is_email_filters( $plugin_public, 'frm_validate_entry', false );
+
 		$this->loader->add_filter( 'frm_validate_entry',
 			$plugin_public,
 			'formidable_filter',
-			1,
+			11,
 			2 );
 	}
 
 	private function define_caldera_filters( GEV_Email_Validator_Public $plugin_public ) {
+		$this->preparer_is_email_filters( $plugin_public, 'caldera_forms_validate_field_email' );
+
 		$this->loader->add_filter( 'caldera_forms_validate_field_email',
 			$plugin_public,
 			'caldera_filter',
@@ -327,6 +337,8 @@ class GEV_Email_Validator {
 	}
 
 	private function define_profile_builder_filters( GEV_Email_Validator_Public $plugin_public ) {
+		$this->preparer_is_email_filters( $plugin_public, 'wppb_check_form_field_default-e-mail' );
+
 		$this->loader->add_filter( 'wppb_check_form_field_default-e-mail',
 			$plugin_public,
 			'profile_builder_filter',
@@ -335,18 +347,57 @@ class GEV_Email_Validator {
 	}
 
 	private function define_contact_form_filters( GEV_Email_Validator_Public $plugin_public ) {
+		add_filter( 'init', function ( $arg ) use ( $plugin_public ) {
+			if ( $this->is_contact_form_request() ) {
+				$this->remove_is_email_filters( $plugin_public );
+			}
+
+			return $arg;
+		}, 49 );
+		add_filter( 'init', function ( $arg ) use ( $plugin_public ) {
+			if ( $this->is_contact_form_request() ) {
+				$this->define_is_email_filters( $plugin_public );
+			}
+
+			return $arg;
+		}, 51 );
+
 		$this->loader->add_filter( 'cntctfrm_check_form',
 			$plugin_public,
 			'contact_form_filter',
 			11 );
 	}
 
-	private function define_is_email_filters( GEV_Email_Validator_Public $plugin_public ) {
-		$this->loader->add_filter( 'is_email',
-			$plugin_public,
-			'is_email_filter' );
+	private function is_contact_form_request() {
+		global $cntctfrm_result;
+
+		return ( isset( $_POST['cntctfrm_contact_action'] ) && isset( $_POST['cntctfrm_language'] ) ) || true === $cntctfrm_result;
 	}
 
+	private function define_is_email_filters( GEV_Email_Validator_Public $plugin_public ) {
+		add_filter( 'is_email', [ $plugin_public, 'is_email_filter' ] );
+	}
+
+	public function remove_is_email_filters( GEV_Email_Validator_Public $plugin_public ) {
+		remove_filter( 'is_email', [ $plugin_public, 'is_email_filter' ] );
+	}
+
+	private function preparer_is_email_filters( $plugin_public, $tag, $removePriority = 0, $addPriority = 20 ) {
+		if ( $removePriority !== false ) {
+			add_filter( $tag, function ( $arg ) use ( $plugin_public ) {
+				$this->remove_is_email_filters( $plugin_public );
+
+				return $arg;
+			}, $removePriority );
+		}
+		if ( $addPriority !== false ) {
+			add_filter( $tag, function ( $arg ) use ( $plugin_public ) {
+				$this->define_is_email_filters( $plugin_public );
+
+				return $arg;
+			}, $addPriority );
+		}
+	}
 
 	/**
 	 * Run the loader to execute all of the hooks with WordPress.
