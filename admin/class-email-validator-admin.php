@@ -185,7 +185,7 @@ class Email_Validator_Admin {
 					       $this->plugin_name ) ?>')"/>
                 <br/>
                 <div id="<?= $apiKeyOutputId ?>"></div>
-                <p class="description"><?= sprintf( __( 'You can find the key in <a href="https://rapidapi.com/developer/security/" target="_blank">Rapid Api</a>, <a href="https://docs.rapidapi.com/docs/keys" target="_blank">Documentation</a>.' ) ) ?></p>
+                <p class="description"><?= __( 'You can find the key in <a href="https://rapidapi.com/developer/security/" target="_blank">Rapid Api</a>, <a href="https://docs.rapidapi.com/docs/keys" target="_blank">Documentation</a>.', $this->plugin_name ) ?></p>
 				<?php
 			},
 			$this->plugin_name,
@@ -268,7 +268,7 @@ class Email_Validator_Admin {
 
 		if ( empty( $apiKey ) ) {
 			?><span class="error-message">
-			<?= __( 'Please enter a API Key and click Save Settings.', $this->plugin_name ) ?>
+			<?= __( 'Please enter a API Key and click \"Save\".', $this->plugin_name ) ?>
             </span><?php
 			die();
 		}
@@ -291,7 +291,7 @@ class Email_Validator_Admin {
 		if ( isset( $data['message'] ) ) {
 			if ( $data['message'] == 'Endpoint/me does not exist' ) {
 				?><span style="color: green">
-				<?= __( 'API Key is valid. Click Save button below.', $this->plugin_name ) ?>
+				<?= __( 'API Key is valid. Click \"Save\" button below.', $this->plugin_name ) ?>
                 </span><?php
 				die();
 			}
