@@ -35,6 +35,8 @@ if ( ! defined( 'WPINC' ) ) {
  */
 define( 'GEV_EMAIL_VALIDATOR_VERSION', '1.0.0' );
 
+define( 'GEV_EMAIL_VALIDATOR_NAME', 'gev-email-validator' );
+
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-email-validator-activator.php

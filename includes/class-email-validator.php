@@ -84,7 +84,7 @@ class GEV_Email_Validator {
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->plugin_name = 'gev-email-validator';
+		$this->plugin_name = GEV_EMAIL_VALIDATOR_NAME;
 
 		$this->load_dependencies();
 
