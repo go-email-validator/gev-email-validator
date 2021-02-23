@@ -204,7 +204,11 @@ class GEV_Email_Validator_Public {
 	 * https://github.com/bestwebsoft/contact-form-wordpress-plugin
 	 */
 	public function contact_form_filter() {
-		if ( empty ( $_POST['cntctfrm_contact_email'] ) ) {
+		$email = '';
+		if ( isset( $_POST['cntctfrm_contact_email'] ) ) {
+			$email = sanitize_email( $_POST['cntctfrm_contact_email'] );
+		}
+		if ( empty ( $email ) ) {
 			return null;
 		}
 		$email  = $_POST['cntctfrm_contact_email'];

@@ -177,15 +177,15 @@ class Email_Validator_Admin {
 				$apiKeyOutputId = $this->options->id( GEV_Email_Validator_Options::APIKEY ) . '_verify';
 				?>
                 <input size="55" type="text" required
-                       id="<?= $apiKeyId ?>"
-                       name="<?= $apiKeyName ?>"
-                       value="<?= $this->options->as_string( GEV_Email_Validator_Options::APIKEY ) ?>"/>
-                <input type="button" value="<?= __( 'Verify API Key', $this->plugin_name ) ?>"
-                       onclick="gevAjaxCheck({'action': '<?= $this->ajaxVerifyUrl ?>','<?= $apiKeyId ?>': jQuery('#<?= $apiKeyId ?>').val()}, jQuery('#<?= $apiKeyOutputId ?>'), jQuery(this), '<?= __( 'Checking...',
+                       id="<?php echo $apiKeyId ?>"
+                       name="<?php echo $apiKeyName ?>"
+                       value="<?php echo $this->options->as_string( GEV_Email_Validator_Options::APIKEY ) ?>"/>
+                <input type="button" value="<?php echo __( 'Verify API Key', $this->plugin_name ) ?>"
+                       onclick="gevAjaxCheck({'action': '<?php echo $this->ajaxVerifyUrl ?>','<?php echo $apiKeyId ?>': jQuery('#<?php echo $apiKeyId ?>').val()}, jQuery('#<?php echo $apiKeyOutputId ?>'), jQuery(this), '<?php echo __( 'Checking...',
 					       $this->plugin_name ) ?>')"/>
                 <br/>
-                <div id="<?= $apiKeyOutputId ?>"></div>
-                <p class="description"><?= __( 'You can find the key in <a href="https://rapidapi.com/developer/security/" target="_blank">Rapid Api</a>, <a href="https://docs.rapidapi.com/docs/keys" target="_blank">Documentation</a>.', $this->plugin_name ) ?></p>
+                <div id="<?php echo $apiKeyOutputId ?>"></div>
+                <p class="description"><?php echo __( 'You can find the key in <a href="https://rapidapi.com/developer/security/" target="_blank">Rapid Api</a>, <a href="https://docs.rapidapi.com/docs/keys" target="_blank">Documentation</a>.', $this->plugin_name ) ?></p>
 				<?php
 			},
 			$this->plugin_name,
@@ -264,11 +264,11 @@ class Email_Validator_Admin {
 
 	public function api_verify_ajax_callback() {
 		$apiKeyId = $this->options->id( GEV_Email_Validator_Options::APIKEY );
-		$apiKey   = esc_attr( $_POST[ $apiKeyId ] );
+		$apiKey   = sanitize_text_field( $_POST[ $apiKeyId ] );
 
 		if ( empty( $apiKey ) ) {
 			?><span class="error-message">
-			<?= __( 'Please enter a API Key and click \"Save\".', $this->plugin_name ) ?>
+			<?php echo __( 'Please enter a API Key and click \"Save\".', $this->plugin_name ) ?>
             </span><?php
 			die();
 		}
@@ -291,7 +291,7 @@ class Email_Validator_Admin {
 		if ( isset( $data['message'] ) ) {
 			if ( $data['message'] == 'Endpoint/me does not exist' ) {
 				?><span style="color: green">
-				<?= __( 'API Key is valid. Click \"Save\" button below.', $this->plugin_name ) ?>
+				<?php echo __( 'API Key is valid. Click \"Save\" button below.', $this->plugin_name ) ?>
                 </span><?php
 				die();
 			}
@@ -337,14 +337,14 @@ class Email_Validator_Admin {
 			$name  = $this->options->name( $nameOpt );
 			$value = $this->options->as_bool( $nameOpt );
 			?>
-            <fieldset id="<?= $this->options->id( $nameOpt ) ?>">
+            <fieldset id="<?php echo $this->options->id( $nameOpt ) ?>">
                 <label>
-                    <input type="radio" name="<?= $name ?>>" value="1" <?= $value ? 'checked' : '' ?>>
-					<?= __( 'On', $this->plugin_name ) ?>
+                    <input type="radio" name="<?php echo $name ?>>" value="1" <?php echo $value ? 'checked' : '' ?>>
+					<?php echo __( 'On', $this->plugin_name ) ?>
                 </label>
                 <label>
-                    <input type="radio" name="<?= $name ?>>" value="" <?= ! $value ? 'checked' : '' ?>>
-					<?= __( 'Off', $this->plugin_name ) ?>
+                    <input type="radio" name="<?php echo $name ?>>" value="" <?php echo ! $value ? 'checked' : '' ?>>
+					<?php echo __( 'Off', $this->plugin_name ) ?>
                 </label>
             </fieldset>
 			<?php
@@ -368,16 +368,16 @@ class Email_Validator_Admin {
 			$name  = $this->options->name( $nameOpt );
 			$value = $this->options->as_string( $nameOpt );
 			?>
-            <textarea class="large-text" rows="<?= $options['rows'] ?>" name="<?= $name ?>>"
-                      id="<?= $id ?>"><?= $value ?></textarea>
+            <textarea class="large-text" rows="<?php echo $options['rows'] ?>" name="<?php echo $name ?>>"
+                      id="<?php echo $id ?>"><?php echo $value ?></textarea>
 			<?php
 			if ( isset( $options['description'] ) ) { ?>
-                <p class="description"><?= $options['description'] ?></p>
+                <p class="description"><?php echo $options['description'] ?></p>
 				<?php
 			}
 			if ( isset( $options['default_value'] ) ) { ?>
-                <input type="button" value="<?= __( 'Reset default value', $this->plugin_name ) ?>"
-                       onclick='document.querySelector("#<?= $id ?>").value = <?= json_encode( $options['default_value'] ) ?>'>
+                <input type="button" value="<?php echo __( 'Reset default value', $this->plugin_name ) ?>"
+                       onclick='document.querySelector("#<?php echo $id ?>").value = <?php echo json_encode( $options['default_value'] ) ?>'>
 				<?php
 			}
 		};
@@ -389,15 +389,15 @@ class Email_Validator_Admin {
 			$name     = $this->options->name( $nameOpt );
 			$valueSet = array_fill_keys( $this->options->as_array( $nameOpt ), null )
 			?>
-            <select name="<?= $name ?>[]" id="<?= $id ?>"
+            <select name="<?php echo $name ?>[]" id="<?php echo $id ?>"
 				<?php
 				foreach ( $htmlOptions as $attr_name => $attr_value ) {
 					echo $attr_name . '="' . esc_attr( $attr_value ) . '"';
 				} ?>>
 				<?php
 				foreach ( $options as $option ) { ?>
-                    <option value="<?= $option ?>" <?= array_key_exists( $option, $valueSet ) ? 'selected' : '' ?>>
-						<?= $option ?>
+                    <option value="<?php echo $option ?>" <?php echo array_key_exists( $option, $valueSet ) ? 'selected' : '' ?>>
+						<?php echo $option ?>
                     </option>
 					<?php
 				} ?>
