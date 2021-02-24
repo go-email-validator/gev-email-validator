@@ -211,7 +211,6 @@ class GEV_Email_Validator_Public {
 		if ( empty ( $email ) ) {
 			return null;
 		}
-		$email  = $_POST['cntctfrm_contact_email'];
 		$errors = $this->validator->validate( $email );
 		if ( $errors->isEmpty() ) {
 			return null;
