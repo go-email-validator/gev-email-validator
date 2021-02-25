@@ -13,33 +13,24 @@ class GEV_Email_Validator_Validator {
 	/** @var GEV_Email_Validator_Options */
 	protected $options;
 
-	public $errorsMatching = [];
-	public $errorPrefix;
-	public $errorSuffix;
+	public $errors_matching = [];
+	public $error_prefix;
+	public $error_suffix;
 
 	public function __construct( $plugin_name, Validator $validator, GEV_Email_Validator_Options $options ) {
 		$this->plugin_name = $plugin_name;
 
 		$this->validator = $validator;
 		$this->options   = $options;
-
-		$this->errorPrefix = __( 'Please enter a ', $this->plugin_name );
-		$this->errorSuffix = __( ' email address.', $this->plugin_name );
-
-		$this->errorsMatching = [
-			ErrorEnum::ERROR_INVALID       => __( 'valid', $this->plugin_name ),
-			ErrorEnum::ERROR_FREE          => __( 'non-free', $this->plugin_name ),
-			ErrorEnum::ERROR_DISPOSABLE    => __( 'non-disposable', $this->plugin_name ),
-			ErrorEnum::ERROR_ROLE          => __( 'non-role', $this->plugin_name ),
-			ErrorEnum::ERROR_UNDELIVERABLE => __( 'existing', $this->plugin_name ),
-		];
 	}
 
-	public function getValidator() {
+	public function get_validator() {
 		return $this->validator;
 	}
 
 	public function validate( $email ) {
+		$this->init_i18n();
+
 		$email = sanitize_email( $email );
 
 		if ( empty( $email ) || $this->wp_validate( $email ) ) {
@@ -49,11 +40,30 @@ class GEV_Email_Validator_Validator {
 		$errors = wp_cache_get( $email, $this->plugin_name );
 
 		if ( empty( $errors ) ) {
-			$errors = $this->getValidator()->validate( $email );
+			$errors = $this->get_validator()->validate( $email );
 			wp_cache_set( $email, $errors, $this->plugin_name );
 		}
 
 		return $errors;
+	}
+
+	protected function init_i18n() {
+		static $need_init;
+
+		if ( false !== $need_init ) {
+			$this->error_prefix = __( 'Please enter a ', $this->plugin_name );
+			$this->error_suffix = __( ' email address.', $this->plugin_name );
+
+			$this->errors_matching = [
+				ErrorEnum::ERROR_INVALID       => __( 'valid', $this->plugin_name ),
+				ErrorEnum::ERROR_FREE          => __( 'non-free', $this->plugin_name ),
+				ErrorEnum::ERROR_DISPOSABLE    => __( 'non-disposable', $this->plugin_name ),
+				ErrorEnum::ERROR_ROLE          => __( 'non-role', $this->plugin_name ),
+				ErrorEnum::ERROR_UNDELIVERABLE => __( 'existing', $this->plugin_name ),
+			];
+
+			$need_init = false;
+		}
 	}
 
 	protected function wp_validate( $email ) {
@@ -93,11 +103,11 @@ class GEV_Email_Validator_Validator {
 	}
 
 	public function get_error_message( $error ) {
-		if ( ! array_key_exists( $error, $this->errorsMatching ) ) {
+		if ( ! array_key_exists( $error, $this->errors_matching ) ) {
 			return false;
 		}
 
-		return $this->errorsMatching[ $error ];
+		return $this->errors_matching[ $error ];
 	}
 
 	public function messages( Errors $errors ) {
@@ -123,7 +133,7 @@ class GEV_Email_Validator_Validator {
 			return $messages[0];
 		}
 
-		return $this->errorPrefix . implode( ', ', $messages ) . $this->errorSuffix;
+		return $this->error_prefix . implode( ', ', $messages ) . $this->error_suffix;
 	}
 
 	public function messages_html( Errors $errors ) {

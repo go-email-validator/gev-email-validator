@@ -27,7 +27,7 @@ class Email_Validator_i18n {
 	 */
 	public function load_plugin_textdomain() {
 		load_plugin_textdomain(
-			'gev-email-validator',
+			GEV_EMAIL_VALIDATOR_NAME,
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);

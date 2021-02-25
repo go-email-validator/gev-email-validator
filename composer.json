@@ -11,8 +11,5 @@
         "php": ">=5.5",
         "ext-json": "*",
         "go-email-validator/sdk": "^1.0"
-    },
-    "require-dev": {
-        "lucatume/wp-browser": "3.0.5.1"
     }
 }

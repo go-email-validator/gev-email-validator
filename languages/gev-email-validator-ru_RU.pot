@@ -132,11 +132,11 @@ msgstr "Проверить Email"
 
 #: includes/class-email-validator-validator.php:26
 msgid "Please enter a "
-msgstr "Пожалуйста введите"
+msgstr "Пожалуйста введите "
 
 #: includes/class-email-validator-validator.php:27
 msgid " email address."
-msgstr "email"
+msgstr " email."
 
 #: includes/class-email-validator-validator.php:30
 msgid "valid"
