@@ -30,7 +30,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'c27a899bf42ccdf2bc0dbfe02029100c97dd65fc',
+    'reference' => '9be2f432daafb3e08f8c97dfe4c31abd18005f3c',
     'name' => 'go-email-validator/gev-email-validator',
   ),
   'versions' => 
@@ -42,7 +42,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'c27a899bf42ccdf2bc0dbfe02029100c97dd65fc',
+      'reference' => '9be2f432daafb3e08f8c97dfe4c31abd18005f3c',
     ),
     'go-email-validator/sdk' => 
     array (

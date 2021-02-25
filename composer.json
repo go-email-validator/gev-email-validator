@@ -11,5 +11,10 @@
         "php": ">=5.5",
         "ext-json": "*",
         "go-email-validator/sdk": "^1.0"
+    },
+    "scripts": {
+        "pre-autoload-dump": [
+            "cd vendor/go-email-validator/sdk/ && rm -fr csharp go java javascript python php/test"
+        ]
     }
 }
